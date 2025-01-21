@@ -3,17 +3,39 @@ from beam import endpoint, Image, Volume
 from transformers import TokenClassificationPipeline, AutoModelForTokenClassification, AutoTokenizer, pipeline
 from transformers.pipelines import AggregationStrategy
 import numpy as np
+import os
+import nltk
 
 from custom_nlp import nlp_process
 
 CACHE_PATH = "./weights"
 
 def download_models():
+    NLTK_DATA_PATH = os.path.join(CACHE_PATH, 'nltk-data')
+    nltk.data.path.append(NLTK_DATA_PATH) # Set NLTK path
+    os.makedirs(NLTK_DATA_PATH, exist_ok=True) # Ensure the directory exists
+
+    # Check and download NLTK resources only if they are missing
+    def download_if_missing(resource_name):
+        try:
+            nltk.data.find(resource_name)
+            print(f"{resource_name} already available.")
+        except LookupError:
+            print(f"Downloading {resource_name}...")
+            nltk.download(resource_name, download_dir=NLTK_DATA_PATH)
+
+    # Use the helper function for all required resources
+    download_if_missing('punkt')
+    download_if_missing('averaged_perceptron_tagger')
+    download_if_missing('maxent_ne_chunker')
+    download_if_missing('words')
+    download_if_missing('wordnet')
+    download_if_missing('stopwords')
 
     # Preload both models and tokenizers into the specified cache path
     keyphrase_model = AutoModelForTokenClassification.from_pretrained("ml6team/keyphrase-extraction-distilbert-inspec", cache_dir=CACHE_PATH)
     keyphrase_tokenizer = AutoTokenizer.from_pretrained("ml6team/keyphrase-extraction-distilbert-inspec", cache_dir=CACHE_PATH)
-    emotion_pipeline = pipeline("text-classification", model="SamLowe/roberta-base-go_emotions", return_all_scores=False)
+    emotion_pipeline = pipeline("text-classification", model="SamLowe/roberta-base-go_emotions", return_all_scores=False, model_kwargs={"cache_dir": CACHE_PATH})
 
     return {
         "keyphrase_model": keyphrase_model,

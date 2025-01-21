@@ -1,31 +1,19 @@
 import logging
 # from bs4 import BeautifulSoup
-import contractions
+# import contractions
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-from nltk.tokenize import word_tokenize, sent_tokenize
-from nltk import pos_tag, ne_chunk, bigrams, trigrams
+# from nltk.tokenize import word_tokenize, sent_tokenize
+# from nltk import pos_tag, ne_chunk, bigrams, trigrams
 from collections import Counter
-# import re
-import os
+# import os
 
-nltk_path = os.path.join(os.getcwd(), 'nltk-data')
 
-nltk.download('punkt')
-nltk.download('punkt_tab')  # Ensure punkt_tab is downloaded as well
-nltk.download('averaged_perceptron_tagger')
-nltk.download('averaged_perceptron_tagger_eng') # new
-nltk.download('maxent_ne_chunker')
-nltk.download('maxent_ne_chunker_tab') # new
-nltk.download('words')
-nltk.download('wordnet')
-nltk.download('stopwords')
 
 # load all the corpus from the nltk-data
-nltk_path = os.path.join(os.getcwd(), 'nltk-data')
-nltk.data.path.append(os.path.join(os.getcwd(), 'nltk-data'))
-
+# nltk_path = os.path.join(os.getcwd(), 'nltk-data')
+# nltk.data.path.append(nltk_path)
 
 # Utility function for named entity extraction
 def extract_named_entities(tree):
